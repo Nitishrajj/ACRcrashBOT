@@ -75,65 +75,55 @@ def sending_message_to_user():
 
 def sending_only_unanno_table():
     try:
-        for i in unannotated_list_of_links:
-            if i not in day_end_list:
-                current_time = datetime.datetime.now(india_timezone)
-                three_hours_ago = current_time - datetime.timedelta(hours=3)
-                formatted_current_time = current_time.strftime("%I:%M %p")
-                formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
-                res = "Unannotated crashes table %s - %s " % (formatted_three_hours_ago,formatted_current_time)
+        current_time = datetime.datetime.now(india_timezone)
+        three_hours_ago = current_time - datetime.timedelta(hours=3)
+        formatted_current_time = current_time.strftime("%I:%M %p")
+        formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
+        res = "Unannotated crashes table %s - %s " % (formatted_three_hours_ago,formatted_current_time)
 
-                # res = f"Unannotated crashes table between {formatted_three_hours_ago} and {formatted_current_time}."
-                #!!!!!!To output list of links as hyperlinks into the webex platform !!!!!
-                # !!!!!!response_text_1 = "\n".join([f"- [{new['date submitted']}] [{new['name']}]({new['url']})" for new in newlist])!!!!!1
-                result_table_for_unannotated = "```%s```" % str(unannotated_table)
-                # result_table_for_unannotated = f'````{(str(unannotated_table))}````'
-                # Define the recent signatures and triage guidelines message text with a hyperlink
-                api.messages.create(roomId=room_id,text = res)
-                api.messages.create(roomId=room_id,markdown=result_table_for_unannotated)
-                final_msg()
-            break
-        for i in links_as_build:
-            if i not in private_or_cec_links:
-                day_end_list.append(i)
-        unannotated_list_of_links.clear()
-        # Clear the rows of the table
-        unannotated_table.clear_rows()
+        # res = f"Unannotated crashes table between {formatted_three_hours_ago} and {formatted_current_time}."
+        #!!!!!!To output list of links as hyperlinks into the webex platform !!!!!
+        # !!!!!!response_text_1 = "\n".join([f"- [{new['date submitted']}] [{new['name']}]({new['url']})" for new in newlist])!!!!!1
+        result_table_for_unannotated = "```%s```" % str(unannotated_table)
+        # result_table_for_unannotated = f'````{(str(unannotated_table))}````'
+        # Define the recent signatures and triage guidelines message text with a hyperlink
+        api.messages.create(roomId=room_id,text = res)
+        api.messages.create(roomId=room_id,markdown=result_table_for_unannotated)
+        final_msg()
     except Exception as e:
         # Log the exception as an error
         # logging.error(f"Error: {str(e)}")
         logging.error("Error: %s" % str(e))
+    finally:
+        unannotated_list_of_links.clear()
+        # Clear the rows of the table
+        unannotated_table.clear_rows()
+
 
 
 def sending_only_anno_table():
     try:
-        for i in annotated_list_of_links:
-            if i not in day_end_list:
-                current_time = datetime.datetime.now(india_timezone)
-                three_hours_ago = current_time - datetime.timedelta(hours=3)
-                formatted_current_time = current_time.strftime("%I:%M %p")
-                formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
-                result_table_for_annotated = "```%s```" % str(annotated_table)
-                res = "Annotated crashes  table  %s - %s" % (formatted_three_hours_ago,formatted_current_time)
-
-                
-                # result_table_for_annotated = f'````{(str(annotated_table))}````'
-                # res = f"Annotated crashes table between {formatted_three_hours_ago} and {formatted_current_time}."
-                # Define the message text with a hyperlink
-                
-                api.messages.create(roomId=room_id,text = res)
-                api.messages.create(roomId=room_id,markdown=result_table_for_annotated)
-                final_msg()
-            break
-        for i in links_as_build:
-            if i not in private_or_cec_links and i not in unannotated_list_of_links:
-                day_end_list.append(i)
-        annotated_list_of_links.clear()
-        # links_as_build.clear()
+        current_time = datetime.datetime.now(india_timezone)
+        three_hours_ago = current_time - datetime.timedelta(hours=3)
+        formatted_current_time = current_time.strftime("%I:%M %p")
+        formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
+        result_table_for_annotated = "```%s```" % str(annotated_table)
+        res = "Annotated crashes  table  %s - %s" % (formatted_three_hours_ago,formatted_current_time)
+        # result_table_for_annotated = f'````{(str(annotated_table))}````'
+        # res = f"Annotated crashes table between {formatted_three_hours_ago} and {formatted_current_time}."
+        # Define the message text with a hyperlink
+        
+        api.messages.create(roomId=room_id,text = res)
+        api.messages.create(roomId=room_id,markdown=result_table_for_annotated)
+        final_msg()
     except Exception as e:
         # Log the exception as an error
         # logging.error(f"Error: {str(e)}")
         logging.error("Error: %s" % str(e))
+    finally:
+        annotated_list_of_links.clear()
+        annotated_table.clear_rows()
+
     
 def final_msg():
 
@@ -149,31 +139,27 @@ def final_msg():
 #Returning to the webex user all the 
 def sending_anno_table():
     try:
-        for i in annotated_list_of_links:
-            if i not in day_end_list:
-                current_time = datetime.datetime.now(india_timezone)
-                three_hours_ago = current_time - datetime.timedelta(hours=3)
-                formatted_current_time = current_time.strftime("%I:%M %p")
-                formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
-                result_table_for_annotated = "```%s```" % str(annotated_table)
-                res = "Annotated crashes table %s and %s" % (formatted_three_hours_ago, formatted_current_time)
+        current_time = datetime.datetime.now(india_timezone)
+        three_hours_ago = current_time - datetime.timedelta(hours=3)
+        formatted_current_time = current_time.strftime("%I:%M %p")
+        formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
+        result_table_for_annotated = "```%s```" % str(annotated_table)
+        res = "Annotated crashes table %s and %s" % (formatted_three_hours_ago, formatted_current_time)
 
-                # result_table_for_annotated = f'````{(str(annotated_table))}````'
-                # res = f"Annotated crashes table between {formatted_three_hours_ago} and {formatted_current_time}"
-                # Define the message text with a hyperlink
-                
-                api.messages.create(roomId=room_id,text = res)
-                api.messages.create(roomId=room_id,markdown=result_table_for_annotated)
-            break
-        for i in links_as_build:
-            if i not in private_or_cec_links and i not in unannotated_list_of_links:
-                day_end_list.append(i)
-        annotated_list_of_links.clear()
-        # links_as_build.clear()
+        # result_table_for_annotated = f'````{(str(annotated_table))}````'
+        # res = f"Annotated crashes table between {formatted_three_hours_ago} and {formatted_current_time}"
+        # Define the message text with a hyperlink
+        
+        api.messages.create(roomId=room_id,text = res)
+        api.messages.create(roomId=room_id,markdown=result_table_for_annotated)
     except Exception as e:
         # Log the exception as an error
         # logging.error(f"Error: {str(e)}")
         logging.error("Error: %s" % str(e))
+    finally:
+        annotated_list_of_links.clear()
+        annotated_table.clear_rows()
+
 
 
 
@@ -196,20 +182,14 @@ def sending_unnanno_table():
                 # Define the recent signatures and triage guidelines message text with a hyperlink
                 api.messages.create(roomId=room_id,text = res)
                 api.messages.create(roomId=room_id,markdown=result_table_for_unannotated)
-            break
-        for i in links_as_build:
-            if i not in private_or_cec_links:
-                day_end_list.append(i)
-        unannotated_list_of_links.clear()
-        # Clear the rows of the table
-        unannotated_table.clear_rows()
     except Exception as e:
         # Log the exception as an error
         # logging.error(f"Error: {str(e)}")
         logging.error("Error: %s" % str(e))
-
-
-
+    finally:
+        unannotated_list_of_links.clear()
+        # Clear the rows of the table
+        unannotated_table.clear_rows()
 
 def sending_private_builds_table():
     try:
@@ -227,16 +207,13 @@ def sending_private_builds_table():
                 api.messages.create(roomId=room_id,markdown=res)
                 api.messages.create(roomId=room_id,markdown=result_table_for_private_builds)
                 final_msg()
-                
-            break
-        for i in private_or_cec_links:
-            day_end_list.append(i)
-        private_or_cec_links.clear()
-        private_builds_table.clear_rows()
     except Exception as e:
         # Log the exception as an error
         # logging.error(f"Error: {str(e)}")
         logging.error("Error: %s" % str(e))
+    finally:
+        private_or_cec_links.clear()
+        private_builds_table.clear_rows()
 
 #Funciton which checks whether the crashes are annotated or unannotated
 def check_anno_or_unnanno(links_as_build):

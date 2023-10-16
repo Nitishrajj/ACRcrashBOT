@@ -39,8 +39,7 @@ recent_signatures_url = os.environ.get("SIGNURL")
 For_triage_guidelines = os.environ.get("TRIAGE")
 cc_reports_host = 'cc-reports.cisco.com'
 room_id = os.environ.get("ROOMID")
-
-
+file_path = "file.txt"
 length_of_end_list = 0
 #To send message to the webex user 
 def sending_message_to_user():
@@ -389,7 +388,11 @@ def table_for_private_builds(private_builds_links):
             # Log the exception as an error
             # logging.error(f"Error: {str(e)}")
             logging.error("Error: %s" % str(e))
-
+def is_substring_in_array(substring, string_array):
+    for string in string_array:
+        if substring in string:
+            return True
+    return False
 def process_func():
     global private_build_count,build_count,links_as_build,private_or_cec_links
     try:
@@ -418,19 +421,24 @@ def process_func():
                                 href_value = a_element['href']
                                 link = 'https://' + cc_reports_host + href_value 
                                 #Checking if it is already present in the day_end list
-                                if link not in day_end_list:
-                                    #Appending link value into a list of which has builder as build
-                                    links_as_build.append(link)
-                                    build_count = 1
+                                with open(file_path, "r+") as file2:
+                                    lines = file2.readlines()
+                                    if not is_substring_in_array(link, lines):
+                                            print(link)
+                                            file2.write(link)
+                                            links_as_build.append(link)
+                                            build_count = 1
                             else:
                                 href_value = a_element['href']
                                 link = 'https://' + cc_reports_host + href_value 
                                 #Checking if it is already present in the day_end list
-                                if link not in day_end_list:
-                                    # links_as_build.append(link)
-                                    #Appending link value into a list of which has builder as either privatebuild/cec id
-                                    private_or_cec_links.append(link)
-                                    private_build_count = 1
+                                with open(file_path, "r+") as file2:
+                                   lines = file2.readlines()
+                                   if not is_substring_in_array(link, lines):
+                                            print(link)
+                                            file2.write(link)
+                                            private_or_cec_links.append(link)
+                                            private_build_count = 1
     except Exception as e:
         # Log the exception as an error
         # logging.error(f"Error: {str(e)}")

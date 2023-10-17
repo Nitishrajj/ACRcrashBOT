@@ -3,6 +3,7 @@ import hashlib
 import logging
 import pytz
 import re
+import json
 import os
 from bs4 import BeautifulSoup
 from prettytable import PrettyTable
@@ -10,9 +11,7 @@ from webexteamssdk import WebexTeamsAPI
 import requests
 # from webex_bot.webex_bot import WebexBot
 WEBEX_BOT_TOKEN = os.environ.get("BOTTOKEN")
-
 india_timezone = pytz.timezone('Asia/Kolkata')
-
 api = WebexTeamsAPI(access_token=WEBEX_BOT_TOKEN)
 # Empty list which is used at the end of the day to output whole day crashes
 day_end_list = []
@@ -42,8 +41,11 @@ room_id = os.environ.get("ROOMID")
 file_path = "file.txt"
 length_of_end_list = 0
 #To send message to the webex user 
+file1_path ="./inp-card.json"
+with open(file1_path,"r") as card1:
+    INPUT_CARD1 = json.load(card1)
+#To send message to the webex user 
 def sending_message_to_user():
-
     if private_build_count == 1 and build_count == 0:
         sending_private_builds_table()
     elif private_build_count == 0 and build_count == 1:
@@ -51,28 +53,20 @@ def sending_message_to_user():
             sending_only_anno_table()
         elif annotated == 0 and unannotated == 1:
             sending_only_unanno_table()
-            
-            
         elif annotated == 1 and unannotated == 1:
             sending_anno_table()
             sending_only_unanno_table()
-            
-
     elif private_build_count == 1 and build_count == 1:
         if annotated == 1 and unannotated == 0:
             sending_anno_table()
             sending_private_builds_table()
-            
         elif annotated == 0 and unannotated == 1:
             sending_unnanno_table()
             sending_private_builds_table()
-            
         elif annotated == 1 and unannotated == 1:
             sending_anno_table()
             sending_unnanno_table()
             sending_private_builds_table()
-            
-
 def sending_only_unanno_table():
     try:
         current_time = datetime.datetime.now(india_timezone)
@@ -80,7 +74,6 @@ def sending_only_unanno_table():
         formatted_current_time = current_time.strftime("%I:%M %p")
         formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
         res = "Unannotated crashes table %s - %s " % (formatted_three_hours_ago,formatted_current_time)
-
         # res = f"Unannotated crashes table between {formatted_three_hours_ago} and {formatted_current_time}."
         #!!!!!!To output list of links as hyperlinks into the webex platform !!!!!
         # !!!!!!response_text_1 = "\n".join([f"- [{new['date submitted']}] [{new['name']}]({new['url']})" for new in newlist])!!!!!1
@@ -98,9 +91,6 @@ def sending_only_unanno_table():
         unannotated_list_of_links.clear()
         # Clear the rows of the table
         unannotated_table.clear_rows()
-
-
-
 def sending_only_anno_table():
     try:
         current_time = datetime.datetime.now(india_timezone)
@@ -112,7 +102,6 @@ def sending_only_anno_table():
         # result_table_for_annotated = f'````{(str(annotated_table))}````'
         # res = f"Annotated crashes table between {formatted_three_hours_ago} and {formatted_current_time}."
         # Define the message text with a hyperlink
-        
         api.messages.create(roomId=room_id,text = res)
         api.messages.create(roomId=room_id,markdown=result_table_for_annotated)
         final_msg()
@@ -123,19 +112,13 @@ def sending_only_anno_table():
     finally:
         annotated_list_of_links.clear()
         annotated_table.clear_rows()
-
-    
 def final_msg():
-
     signatures_url_as_link = "Click [here](%s) to refer recent signatures." % recent_signatures_url
     triage_as_link = "Click [here](%s) to refer for triage guidelines." % For_triage_guidelines
-
     # signatures_url_as_link = f"Click [here]({recent_signatures_url}) to refer recent signatures."
     # triage_as_link = f"Click [here]({For_triage_guidelines}) to refer for triage guidelines."
     api.messages.create(roomId=room_id,markdown=signatures_url_as_link)
     api.messages.create(roomId=room_id,markdown=triage_as_link)
-
-
 #Returning to the webex user all the 
 def sending_anno_table():
     try:

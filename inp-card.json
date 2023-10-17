@@ -1,0 +1,67 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.3",
+    "body": [
+        {
+            "type": "TextBlock",
+            "size": "medium",
+            "weight": "bolder",
+            "text": "Please select version details accurately",
+            "horizontalAlignment": "center",
+            "wrap": true,
+            "style": "heading"
+        },
+        {
+            "type": "Input.ChoiceSet",
+            "id": "versionname",
+            "label": "Version name",
+            "value": "reminders",
+            "choices": [
+                {
+
+                    "title": "X14.4PreAlpha5 (Test SW)",
+                    "value": "\nX14.4PreAlpha5 (Test SW) "
+                    
+                },
+                {
+                    "title": "X14.4PreAlpha4 (Test SW)",
+                    "value": "\nX14.4PreAlpha4 (Test SW) "
+                    
+                },
+                {
+                    "title": "X14.3Alpha3 (Test SW)",
+                    "value": "\nX14.3Alpha3 (Test SW) "
+                    
+                },
+                {
+                    "title": "Others",
+                    "value": "Others"
+                    
+                }
+            ]
+        },
+        {
+            "type": "Input.Text",
+            "id": "customInput",
+            "label": "Enter other option:",
+            "isVisible": false
+
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.Submit",
+            "title": "Submit",
+            "data": {
+                "id": "loginval"
+            }
+        },
+        {
+            "type": "Action.ToggleVisibility",
+            "title": "Others",
+            "targetElements": ["customInput"]
+
+        }
+    ]
+}

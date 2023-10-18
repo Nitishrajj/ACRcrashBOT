@@ -9,10 +9,15 @@ from bs4 import BeautifulSoup
 from prettytable import PrettyTable
 from webexteamssdk import WebexTeamsAPI
 import requests
-# from webex_bot.webex_bot import WebexBot
+from webex_bot.webex_bot import WebexBot
+from webex_bot.models.command import Command
 WEBEX_BOT_TOKEN = os.environ.get("BOTTOKEN")
 india_timezone = pytz.timezone('Asia/Kolkata')
 api = WebexTeamsAPI(access_token=WEBEX_BOT_TOKEN)
+bot = WebexBot(teams_bot_token = WEBEX_BOT_TOKEN)
+version = set()
+private_or_cec_version_links = set()
+buildversion_list = set()
 # Empty list which is used at the end of the day to output whole day crashes
 day_end_list = []
 # Declaring empty list and later adding only links with private or cec id builder
@@ -453,13 +458,87 @@ def perform_action():
 """To schedule the bot to run every 3 hours
 schedule.every(180).minutes.do(perform_action)
 """
-# Run the scheduled tasks continuously
 
-# while True:
-#     #Fetching the current time
-#     now = datetime.datetime.now()
-#     now = now.strftime("%I:%M %p")
-    # if working_start_time <= now <= working_end_time:
-    # schedule.run_pending()
+
+class Searchbyversion(Command):
+    def __init__(self):
+        super().__init__(command_keyword = "loginval",
+                        card = INPUT_CARD1,
+                        help_message = "crashesversionhelp"
+                        )
+    def execute(self, message, attachment_actions, activity):
+        global private_build_count,build_count,links_as_build,private_or_cec_links
+        try: 
+            crashversion1 = attachment_actions.inputs['versionname']
+            crashversion2 = attachment_actions.inputs['customInput']
+            if crashversion1 or crashversion2 :
+                response = requests.get(recent_signatures_url)
+                if response.status_code == 200:
+                    page_data = BeautifulSoup(response.content, 'html.parser')
+                    all_tr_elements = page_data.find_all('tr')
+                #To get crashes which are appeared today only
+                    text = "Today"
+                    target_tr = None
+                    for tr_element in all_tr_elements:
+                        td_elements = tr_element.find_all('td')
+                        for td_element in td_elements:
+                            if text in td_element.get_text():
+                                target_tr = tr_element
+                                if len(td_element) > 0:
+                                    t = target_tr.find_all('td')[1]
+                                    a = t.find('a').get_text()
+                                    print("this is crash ver",crashversion2,crashversion1,a)
+                                    if a == crashversion1 or a == crashversion2:
+                                    #To get the tag associated with build/private_build/cec - id
+                                        print("this is all 3",a,crashversion2,crashversion1)
+                                        td_ele = target_tr.find_all('td')
+                                        #To get tag associated with href value 
+                                        a_element = td_ele[0].find('a')
+                                        build = "build"
+                                        #Getting build/private_build/cec - id to compare 
+                                        builder = td_ele[3].get_text().strip()
+                                        if builder == build:
+                                            print("inside build")
+                                            #Getting the href value using the tag we got earlier
+                                            href_value = a_element['href']
+                                            link = 'https://' + cc_reports_host + href_value 
+                                            print("link",link)
+                                            buildversion_list.add(link)
+                                            version.add(link)
+                                            build_count = 1
+                                        else:
+                                            href_value = a_element['href']
+                                            link = 'https://' + cc_reports_host + href_value 
+                                            private_or_cec_version_links.add(link)
+                                            private_build_count = 1
+
+        except Exception as e:
+        # Log the exception as an error
+        # logging.error(f"Error: {str(e)}")
+            logging.error("Error: %s" % str(e))
+
+        if private_build_count == 1 and build_count == 1:
+            print("j")
+            check_anno_or_unnanno(version)
+            table_for_private_builds(private_or_cec_version_links)
+            sending_message_to_user()
+            version.clear()
+            private_or_cec_links.clear()
+        elif private_build_count == 0 and build_count == 1:
+            print("k")
+            check_anno_or_unnanno(version)
+            sending_message_to_user()
+            version.clear()
+        elif private_build_count == 1 and build_count == 0:
+            table_for_private_builds(private_or_cec_version_links)
+            print("l")
+            sending_message_to_user()
+            private_or_cec_version_links.clear()
+
+
+
 perform_action()
     # time.sleep(1)  # Sleep for 1 second to avoid high CPU usage
+
+bot.add_command(Searchbyversion())
+bot.run()

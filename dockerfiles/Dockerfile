@@ -27,5 +27,5 @@ ADD ./crashreporter /crashreporter
 WORKDIR /crashreporter/src
 
 # Define the entry point to run main.py every 6 hour interval
-CMD while true; do /usr/bin/python3 main.py; sleep 21600; done
+# CMD while true; do /usr/bin/python3 main.py; sleep 21600; done
 

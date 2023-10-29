@@ -153,23 +153,21 @@ def sending_anno_table():
 
 def sending_unnanno_table():
     try:
-        for i in unannotated_list_of_links:
-            if i not in day_end_list:
-                current_time = datetime.datetime.now(india_timezone)
-                three_hours_ago = current_time - datetime.timedelta(hours=3)
-                formatted_current_time = current_time.strftime("%I:%M %p")
-                formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
-                
-                
-                result_table_for_unannotated = "```%s```" % str(unannotated_table)
-                res = "Unannotated crashes table %s - %s" % (formatted_three_hours_ago, formatted_current_time)
+        current_time = datetime.datetime.now(india_timezone)
+        three_hours_ago = current_time - datetime.timedelta(hours=3)
+        formatted_current_time = current_time.strftime("%I:%M %p")
+        formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
+        
+        
+        result_table_for_unannotated = "```%s```" % str(unannotated_table)
+        res = "Unannotated crashes table %s - %s" % (formatted_three_hours_ago, formatted_current_time)
 # res = f"Unnannotated crashes table {formatted_three_hours_ago} and {formatted_current_time}"
-                #!!!!!!To output list of links as hyperlinks into the webex platform !!!!!
-                # !!!!!!response_text_1 = "\n".join([f"- [{new['date submitted']}] [{new['name']}]({new['url']})" for new in newlist])!!!!!1
-                # result_table_for_unannotated = f'````{(str(unannotated_table))}````'
-                # Define the recent signatures and triage guidelines message text with a hyperlink
-                api.messages.create(roomId=room_id,text = res)
-                api.messages.create(roomId=room_id,markdown=result_table_for_unannotated)
+        #!!!!!!To output list of links as hyperlinks into the webex platform !!!!!
+        # !!!!!!response_text_1 = "\n".join([f"- [{new['date submitted']}] [{new['name']}]({new['url']})" for new in newlist])!!!!!1
+        # result_table_for_unannotated = f'````{(str(unannotated_table))}````'
+        # Define the recent signatures and triage guidelines message text with a hyperlink
+        api.messages.create(roomId=room_id,text = res)
+        api.messages.create(roomId=room_id,markdown=result_table_for_unannotated)
     except Exception as e:
         # Log the exception as an error
         # logging.error(f"Error: {str(e)}")
@@ -181,20 +179,18 @@ def sending_unnanno_table():
 
 def sending_private_builds_table():
     try:
-        for i in private_or_cec_links:
-            if i not in day_end_list:
-                current_time = datetime.datetime.now(india_timezone)
-                three_hours_ago = current_time - datetime.timedelta(hours=3)
-                formatted_current_time = current_time.strftime("%I:%M %p")
-                formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
-                # result_table_for_private_builds = f'````{(str(private_builds_table))}````'
-                # res = f" Private builds table between {formatted_three_hours_ago} and {formatted_current_time} ."
-                result_table_for_private_builds = "```%s```" % str(private_builds_table)
-                res = "Private builds table %s - %s." % (formatted_three_hours_ago, formatted_current_time)
+        current_time = datetime.datetime.now(india_timezone)
+        three_hours_ago = current_time - datetime.timedelta(hours=3)
+        formatted_current_time = current_time.strftime("%I:%M %p")
+        formatted_three_hours_ago = three_hours_ago.strftime("%I:%M %p")
+        # result_table_for_private_builds = f'````{(str(private_builds_table))}````'
+        # res = f" Private builds table between {formatted_three_hours_ago} and {formatted_current_time} ."
+        result_table_for_private_builds = "```%s```" % str(private_builds_table)
+        res = "Private builds table %s - %s." % (formatted_three_hours_ago, formatted_current_time)
 #                 # Define the message
-                api.messages.create(roomId=room_id,markdown=res)
-                api.messages.create(roomId=room_id,markdown=result_table_for_private_builds)
-                final_msg()
+        api.messages.create(roomId=room_id,markdown=res)
+        api.messages.create(roomId=room_id,markdown=result_table_for_private_builds)
+        final_msg()
     except Exception as e:
         # Log the exception as an error
         # logging.error(f"Error: {str(e)}")
